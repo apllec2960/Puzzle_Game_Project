@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+    table,td{border:1px solid gray;}
+    table {border-collapse: collapse;}
+</style>
+<script src="/puzzle/scripts/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+	<!-- 
+	[TOP10]
+	limit 10
+	
+	SELECT * FROM report ORDER BY timer ASC, count ASC;
+	[Today Top 10] 
+	WHERE 날짜함수(report_date) == 날짜함수(now()) limit 10
+	
+	
+	[my report list] WHERE member_id="?
+	 -->
+
+	<!-- 공통 -->
+	<h1>index -<span id="loginState"></span>- </h1>
+	<button id="totalBtn">top10</button>
+	<button id="todayBtn">오늘의 top10</button>
+	<button id="monthBtn">이달의 top10</button>
+	
+	<table>
+		<tr id="list">
+		</tr>
+	</table>
+	
+	
+	<!-- 로그인 전 -->
+	<button id ="loginBtn">로그인</button>
+	<button id ="joinBtn">회원가입</button>
+	<!-- 로그아웃 -->
+	<button id ="logoutBtn">로그아웃</button>
+	<button id ="myRecordList">my report list</button>
+	<button id ="gameBtn">게임</button>
+	<button>비밀번호 수정</button>
+	<button>회원탈퇴</button>
+	
+	
+	
+</body>
+<script>	
+$(document).ready(function(){
+   // sessionInfo값을 요청 동기요청!
+   let loginState = null;
+   
+   $.ajax({
+	  url :"/puzzle/GetSessionInfo",
+	  async : false, // 동기요청
+	  method : "POST",
+	  success : function(json){
+		loginState = json;
+		console.log("sessionInfo : ", loginState);
+	  }
+   });	 
+   
+    //로그인이 되었나 묻는 
+    if(loginState == null){
+	   location.href = "/puzzle/login.html";
+	   return false;
+    }
+    
+   //상단에 로그인 id표시
+   $("#loginState").text(loginState);
+	   
+	//전체 탑10 버튼
+	$("#totalBtn").click(function(){
+	    $.ajax({
+	         url: "/puzzle/SelectReportLimit",
+	         method: "POST",
+	         success : function(json){
+	            $("#list").empty();
+	           // console.log(json);
+	            $(json).each(function(index, item){
+	               let html = "<tr>";
+	               html += "<td>"+item.memberId+"</td>";
+	               html += "<td>"+item.reportDate+"</td>";
+	               html += "<td>"+item.count+"</td>";
+	               html += "<td>"+item.timer+"</td>";
+	               html += "</tr>";
+	               $("#list").append(html);
+	            })            
+	         }                           
+	      }); 
+	});
+	//오늘 탑10 버튼
+	$("#todayBtn").click(function(){
+	    $.ajax({
+	         url: "/puzzle/SelectReportToday",
+	         method: "POST",
+	         success : function(json){
+	            $("#list").empty();
+	           // console.log(json);
+	            $(json).each(function(index, item){
+	               let html = "<tr>";
+	               html += "<td>"+item.memberId+"</td>";
+	               html += "<td>"+item.reportDate+"</td>";
+	               html += "<td>"+item.count+"</td>";
+	               html += "<td>"+item.timer+"</td>";
+	               html += "</tr>";
+	               $("#list").append(html);
+	            });       
+	         }                    
+	      }); 
+	});
+	//이번달 탑10 버튼
+	$("#monthBtn").click(function(){
+		$.ajax({
+			url : "/puzzle/SelectReportMonth",
+			method : "POST",
+			success : function(json){
+			$("#list").empty();
+			//console.log(json);
+				$(json).each(function(index, item){
+					let html = "<tr>";
+					html += "<td>"+item.memberId+"</td>";
+					html += "<td>"+item.reportDate+"</td>";
+		            html += "<td>"+item.count+"</td>";
+		            html += "<td>"+item.timer+"</td>";
+		            html += "</tr>";
+		            $("#list").append(html);
+				});
+			}	
+	 	});
+	});
+	//나의 기록 버튼
+	$("#myRecordList").click(function(){
+		$.ajax({
+			url : "/puzzle/SelectReportMyRec",
+			method : "POST",
+			data : {"ID" : loginState}, //데이터값 입력.
+			success : function(json){
+				console.log(json);
+				$("#list").empty();
+				$(json).each(function(index, item){
+					let html ="<tr>";
+					html += "<td>"+item.memberId+"</td>";
+					html += "<td>"+item.reportDate+"</td>";
+		            html += "<td>"+item.count+"</td>";
+		            html += "<td>"+item.timer+"</td>";
+		            html += "</tr>";
+		            $("#list").append(html);
+				});
+			}
+		});
+	});
+	
+	//로그인이 안되어있을시 로그인버튼
+	
+	//로그인 페이지 이동.
+	$("#loginBtn").click(function(){
+		location.href="/puzzle/login.html";
+	});
+	//회원가입 페이지 이동
+	$("#joinBtn").click(function(){
+		location.href="/puzzle/join.html";
+	});
+	//게임하기
+	$("#gameBtn").click(function(){
+		location.href="/puzzle/puzzle.html";
+	});
+});
+</script>
+</html>

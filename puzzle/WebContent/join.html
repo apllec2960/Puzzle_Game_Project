@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Sigh Up</title>
+<script src="/puzzle/scripts/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+   <h2>Sigh Up</h2>
+   <table>
+      <tr>
+         <td>member_id</td>
+         <td><input id="memberId" type="text"></td>
+      </tr>
+      <tr>
+         <td>member_pw</td>
+         <td><input id="memberPw" type="password"></td>
+      </tr>
+   </table> 
+   <button id="joinBtn">회원가입</button>
+</body>
+<script>
+   $("#joinBtn").click(function(){
+      $.ajax({
+           url :"/puzzle/AddMember",
+           method : "POST",
+           data : {"memberId": $("#memberId").val(),
+                   "memberPw": $("#memberPw").val()},
+             success: function(){
+              location.href = "/puzzle/login.html";
+            return false;
+             }
+       });
+   });
+   
+</script>
+</html>

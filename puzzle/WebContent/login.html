@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+<script src="/puzzle/scripts/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+	<h2>Login</h2>
+	<table>
+		<tr>
+			<td>member_id</td>
+			<td><input id="memberId" type="text"></td>
+		</tr>
+		<tr>
+			<td>member_pw</td>
+			<td><input id="memberPw" type="text"></td>
+		</tr>
+	</table> 
+	<button id="loginBtn">login</button>
+	<button id="joinBtn">회원가입</button>	<!-- click : location.href ="" -->
+</body>
+<script>
+	//로그인 버튼 클릭
+	$("#loginBtn").click(function(){
+		$.ajax({
+			  url :"/puzzle/GetLogin",
+			  method : "POST",
+			  data : {"memberId": $("#memberId").val(),
+				  	  "memberPw": $("#memberPw").val()},
+			  success : function(){
+				  location.href = "/puzzle/index.html";
+				   return false;
+			  }
+		 });
+	});
+	
+	//회원가입 페이지 이동
+	$("#joinBtn").click(function(){
+		location.href="/puzzle/join.html";
+	});
+</script>
+</html>
