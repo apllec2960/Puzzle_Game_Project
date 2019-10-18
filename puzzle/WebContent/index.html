@@ -37,11 +37,11 @@
 	<!-- 로그인 전 -->
 	<button id ="loginBtn">로그인</button>
 	<button id ="joinBtn">회원가입</button>
-	<!-- 로그아웃 -->
+	<!-- 로그인 후 -->
 	<button id ="logoutBtn">로그아웃</button>
 	<button id ="myRecordList">my report list</button>
 	<button id ="gameBtn">게임</button>
-	<button>비밀번호 수정</button>
+	<button id ="updateBtn">비밀번호 수정</button>
 	<button>회원탈퇴</button>
 	
 	
@@ -70,6 +70,9 @@ $(document).ready(function(){
     
    //상단에 로그인 id표시
    $("#loginState").text(loginState);
+   
+   
+   
 	   
 	//전체 탑10 버튼
 	$("#totalBtn").click(function(){
@@ -153,20 +156,26 @@ $(document).ready(function(){
 		});
 	});
 	
-	//로그인이 안되어있을시 로그인버튼
-	
 	//로그인 페이지 이동.
 	$("#loginBtn").click(function(){
 		location.href="/puzzle/login.html";
+		return false
 	});
 	//회원가입 페이지 이동
 	$("#joinBtn").click(function(){
 		location.href="/puzzle/join.html";
+		return false
 	});
 	//게임하기
 	$("#gameBtn").click(function(){
 		location.href="/puzzle/puzzle.html";
+		return false
 	});
+	//비밀번호 수정페이지 이동.
+	$("#updateBtn").click(function(){
+		location.href="/puzzle/myPage.html";
+		return false
+	})
 });
 </script>
 </html>
