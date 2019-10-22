@@ -4,13 +4,27 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
+	.align-center { 
+		text-align: center; 
+		}
+
+.layer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 600px;
+  height: 600px;
+  margin: auto;
+}
 
 	.card {
 		width: 100px;
 		height: 100px;
 		position: relative;
 		transform-style: preserve-3d;
-		transition: 0.5s;
+		transition: 1s;
 	}
 	
 	.face {
@@ -44,14 +58,15 @@
 <script src="/puzzle/scripts/jquery-3.4.1.min.js"></script>
 </head>
 <body ondragstart ='return false' oncontextmenu ='return false'>
-	<h2 class="text-center">puzzle 
+	<h2 class="align-center">puzzle 
 	<br>
 	- ID:<span id="loginState"></span> - <span id="timer">0</span>'s</h2>
 	<hr>
+	<div class="align-center">
 		<!--  힌트 버튼  -->
-		<button id="indexBtn">인덱스로</button><button id="hintBtn">힌트</button>
+		<button id="indexBtn">인덱스로</button><button id="hintBtn"">힌트</button>
 		
-		<table id="board">
+		<table id="board" class="layer">
 		<!--  퍼즐 출력  -->
 		</table>
 		<!-- 버튼 리스트 -->
@@ -59,7 +74,7 @@
 			<button id="logoutBtn">로그아웃</button>
 			<button id="resetBtn">리셋</button>
 		</div>
-	
+	</div>
 </body>
 <script>
 	
@@ -102,11 +117,9 @@
 	
    $(document).ready(function(){
 	   
-	  
-		
 	   // sessionInfo값을 요청 동기요청!
 	   let loginState = null;
-	   /*
+	   
 	   $.ajax({
 		  url :"/puzzle/GetSessionInfo",
 		  async : false, // 동기요청
@@ -116,11 +129,13 @@
 			console.log("sessionInfo : ", loginState); //세션값 (로그인아이디);
 		  }
 	   });
+	   
 	    //로그인이 되었나 묻는 
 	    if(loginState == null){
 		   location.href = "/puzzle/login.html";
 		   return false;
-	   }  */
+	   }  
+	    
 	   //상단에 로그인 id표시
 	   $("#loginState").text(loginState);
 	   
@@ -132,21 +147,26 @@
 	  }, 1000);
 	   
 	   //시작 메시지
-	  /*  setTimeout(function() {
+	    setTimeout(function() {
 	 	alert('바로 시작!!!');
-		}, 999); */
-	   
-	   
+		}, 999);  
+		
 	   //힌트 -힌트를 누르기전 맞춘 퍼즐은 가려짐.
 	   let hintCount = 0; 
 	
 	   $("#hintBtn").click(function(){
-	   $(".pic").attr("disabled",true); //힌트 진행중 퍼즐 클릭방지.
-	   
-		   $(".pic").each(function(){
-					$(this).attr("disabled",false);
-			
-	        });
+	  //버튼 클릭시 뒤집어짐.
+	   $(".card").each(function(){
+			$(this).toggleClass("active");
+			$(".face").attr('disabled', true); //클릭방지
+		})
+	   //2초후 다시 돌아감.
+	   setTimeout(function() {
+			$(".card").each(function(){
+				$(this).toggleClass("active");
+				$(".face").attr('disabled', false); //클릭방지 해제
+			})
+		}, 2000);
 		   hintCount ++
 		   console.log("hintCount", hintCount);
 		   
@@ -172,15 +192,15 @@
 	  console.log("model.length"+model.length); //출력한 model 크기
 	  
       // 모델을 섞는다 (a: 섞을 수)
-/*       for(let a=0; a<10000; a++) {
+       for(let a=0; a<10000; a++) {
          // ran : 0~15
          let ran = Math.floor(Math.random()*model.length);
          let tmp = model[0];
          model[0] = model[ran];
          model[ran] = tmp;
-      } */
+      } 
       
-      //이미지 출력.
+      //이미지 출력. 1Round 4x4
       $("#board").empty();
 		$(model).each(function(index, item){
 			if (index%4 == 0) {
@@ -190,7 +210,7 @@
 			game += "<input type='image' class='face front' src='/puzzle/images/";
 			game += item;
 			game += "'>";
-			game += "<input type='image' class='face back' src='/puzzle/images/1.png'>";
+			game += "<input type='image' class='face back' src='/puzzle/images/1.jpg'>";
 			game += "</td>";
 			$("#board").append(game);
 			if (index%4 == 0) {
@@ -213,6 +233,8 @@
     	//------------플립기능-----------------------------------------------------
    	   
    			$(this).toggleClass("active");
+   		//card클래스의 하위 클래스에 더블 클릭을 방지한다.
+			$(this).children().attr('disabled', true);
    		
     	  
     	  //console.log("click------");
@@ -268,9 +290,8 @@
                            model[0] = model[ran];
                            model[ran] = tmp;
                         }
-                    	//모델출력
-						//이미지 출력.
-					
+                    
+						//퍼즐 출력  6x6
 					      $("#board").empty();
 								$(model).each(function(index, item){
 									if (index%6 == 0) {
@@ -280,17 +301,20 @@
 									game += "<input type='image' class='face front' src='/puzzle/images/";
 									game += item;
 									game += "'>";
-									game += "<input type='image' class='face back' src='/puzzle/images/1.png'>";
+									game += "<input type='image' class='face back' src='/puzzle/images/1.jpg'>";
 									game += "</td>";
 									$("#board").append(game);
 									if (index%6 == 0) {
 										$("#board").append("</tr>");
 									}
 								});
+								
+								//카드가 뒷면으로 출력되어 뒤집음.
 								$(".card").each(function(){
 									$(this).toggleClass("active");
 								})
-					      //서서히 이미지가 사라짐.
+								
+					      		//3초후 카드가 뒤집어짐.
 								setTimeout(function() {
 									$(".card").each(function(){
 										$(this).toggleClass("active");
@@ -313,19 +337,21 @@
                     }   // if(success == model.length/2){
                }else {  // } : if($(onePic).attr("src") == $(twoPic).attr("src")) //틀리면 가려짐.
                 
-                  console.log("no");
+               	//틀렸을시 0.5초후 뒤집어짐.
+                  setTimeout(function(){
+              
                   $(onePic).toggleClass("active");
                   $(twoPic).toggleClass("active");
                   $(onePic).attr("disabled",false); //더블클릭 방지 해제
                   $(twoPic).attr("disabled",false); 
+                  },1000);
                }
-               
                state=0;
             }//2=state
         });//document.ready2
     
     
-	//---------------3초 후 강제 플립(뒤집기)-----------------------------
+	//---------------1round 시작 3초 후 강제 플립(뒤집기)-----------------------------
 	setTimeout(function() {
 		$(".card").each(function(){
 			$(this).toggleClass("active");
