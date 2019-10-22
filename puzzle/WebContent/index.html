@@ -3,9 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <style>
-    table,td{border:1px solid gray;}
-    table {border-collapse: collapse;}
 </style>
 <script src="/puzzle/scripts/jquery-3.4.1.min.js"></script>
 </head>
@@ -22,29 +32,42 @@
 	[my report list] WHERE member_id="?
 	 -->
 
-	<!-- 공통 -->
-	<h1>index -<span id="loginState"></span>- </h1>
-	<button id="totalBtn">top10</button>
-	<button id="todayBtn">오늘의 top10</button>
-	<button id="monthBtn">이달의 top10</button>
+	<div align="center" >
 	
-	<table>
-		<tr id="list">
-		</tr>
-	</table>
+		<h1>index</h1>
+		<h3><span id="loginState"></span></h3>
+		
+		<table>
+			<tr>
+				<td>
+					<!-- 로그인 후 -->
+					<button id ="gameBtn">게임</button>
+				</td>
+				<td>
+					<!-- 로그인 전 -->
+					<button id ="loginBtn">로그인</button>
+					<button id ="joinBtn">회원가입</button>
+					<!-- 로그인 후 -->
+					<button id ="logoutBtn">로그아웃</button>
+					<button id ="updateBtn">개인정보 수정</button>
+				<td>
+			</tr>
+		</table>
+		<hr>
+		
 	
+		<button id="totalBtn">top10</button>
+		<button id="todayBtn">오늘의 top10</button>
+		<button id="monthBtn">이달의 top10</button>
+		<!-- 로그인 후 -->
+		<button id ="myRecordList">my report list</button>
+		<hr>
+		
+		<!--순위 list 출력 -->
+		<table  class="table container" id ="list">
+		</table>
 	
-	<!-- 로그인 전 -->
-	<button id ="loginBtn">로그인</button>
-	<button id ="joinBtn">회원가입</button>
-	<!-- 로그인 후 -->
-	<button id ="logoutBtn">로그아웃</button>
-	<button id ="myRecordList">my report list</button>
-	<button id ="gameBtn">게임</button>
-	<button id ="updateBtn">비밀번호 수정</button>
-	<button>회원탈퇴</button>
-	
-	
+	</div>
 	
 </body>
 <script>	
@@ -62,16 +85,38 @@ $(document).ready(function(){
 	  }
    });	 
    
-    //로그인이 되었나 묻는 
+/*     //로그인이 되었나 묻는 
     if(loginState == null){
 	   location.href = "/puzzle/login.html";
 	   return false;
     }
-    
+ */    
+ 
    //상단에 로그인 id표시
    $("#loginState").text(loginState);
-   
-   
+  
+   //로그인시... 비로그인시..
+   if(loginState == null){
+	   $("#totalBtn").show();
+	   $("#todayBtn").show();   
+	   $("#MonthBtn").show();
+	   $("#loginBtn").show();
+	   $("#joinBtn").show();
+	   $("#logoutBtn").hide();
+	   $("#myRecordList").hide();
+	   $("#gameBtn").hide();
+	   $("#updateBtn").hide();
+   }else{
+	   $("#totalBtn").show();
+	   $("#todayBtn").show();   
+	   $("#MonthBtn").show();
+	   $("#loginBtn").hide();
+	   $("#joinBtn").hide();
+	   $("#logoutBtn").show();
+	   $("#myRecordList").show();
+	   $("#gameBtn").show();
+	   $("#updateBtn").show();
+   }
    
 	   
 	//전체 탑10 버튼
@@ -90,6 +135,7 @@ $(document).ready(function(){
 	               html += "<td>"+item.timer+"</td>";
 	               html += "</tr>";
 	               $("#list").append(html);
+	               
 	            })            
 	         }                           
 	      }); 
@@ -121,7 +167,7 @@ $(document).ready(function(){
 			method : "POST",
 			success : function(json){
 			$("#list").empty();
-			//console.log(json);
+			console.log(json);
 				$(json).each(function(index, item){
 					let html = "<tr>";
 					html += "<td>"+item.memberId+"</td>";
@@ -129,6 +175,7 @@ $(document).ready(function(){
 		            html += "<td>"+item.count+"</td>";
 		            html += "<td>"+item.timer+"</td>";
 		            html += "</tr>";
+		            console.log(html);
 		            $("#list").append(html);
 				});
 			}	
@@ -175,7 +222,27 @@ $(document).ready(function(){
 	$("#updateBtn").click(function(){
 		location.href="/puzzle/myPage.html";
 		return false
-	})
+	});
+	 //로그아웃 버튼
+    $("#logoutBtn").click(function(){
+       console.log("out");
+       $.ajax({
+            url :"/puzzle/Logout",
+            method : "POST",
+            success : function(json){
+             console.log("sessionInfo : ", loginState);
+             location.href = "/puzzle/login.html";
+             return;
+            }, 
+            error: function() {
+             alert("로그아웃 실패 다시 입력해 주세요.");
+          },
+          fail: function() {
+             alert("로그아웃 실패 다시 입력해 주세요.");
+          }
+          });
+    });
+	
 });
 </script>
 </html>

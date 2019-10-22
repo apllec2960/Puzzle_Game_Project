@@ -3,71 +3,124 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-<!-- Popper JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <style>
-    table,td{border:1px solid gray;}
-    table {border-collapse: collapse;}
+
+	.card {
+		width: 100px;
+		height: 100px;
+		position: relative;
+		transform-style: preserve-3d;
+		transition: 0.5s;
+	}
+	
+	.face {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		color: white;
+		line-height: 50px;
+		text-align: center;
+		backface-visibility: hidden;
+	}
+	
+	.front {
+		transform: rotateY(180deg);
+	}
+	
+	.back {
+		background : black;
+		background-size: 100px;
+		transform: rotateY(0deg);
+	}
+	
+	.active {
+		transform: rotateY(180deg);
+		animation: cardRotate 0.1s
+	}
 </style>
+
 <script src="/puzzle/scripts/jquery-3.4.1.min.js"></script>
 </head>
-<body>
-	<h2>puzzle - <span id="loginState"></span> - <span id="timer">0</span></h2>
-	<button id="indexBtn">인덱스로</button>
-	<table id="board">
-	</table>
-	<div>
-		<button id="logoutBtn">로그아웃</button>
-		<button id="resetBtn">리셋</button>
-	</div>
+<body ondragstart ='return false' oncontextmenu ='return false'>
+	<h2 class="text-center">puzzle 
+	<br>
+	- ID:<span id="loginState"></span> - <span id="timer">0</span>'s</h2>
+	<hr>
+		<!--  힌트 버튼  -->
+		<button id="indexBtn">인덱스로</button><button id="hintBtn">힌트</button>
+		
+		<table id="board">
+		<!--  퍼즐 출력  -->
+		</table>
+		<!-- 버튼 리스트 -->
+		<div>
+			<button id="logoutBtn">로그아웃</button>
+			<button id="resetBtn">리셋</button>
+		</div>
+	
 </body>
 <script>
-   let model = ["p0.png","p0.png",
+	
+  // 모델 1
+  let model1 = ["p0.png","p0.png",
                 "p1.png","p1.png",
                 "p2.png","p2.png",
                 "p3.png","p3.png",
                 "p4.png","p4.png",
                 "p5.png","p5.png",
                 "p6.png","p6.png",
-                "p7.png","p7.png",
-                "p8.png","p8.png",
-                "p9.png","p9.png",
-                "p10.png","p10.png",
-                "p11.png","p11.png",
-                "p12.png","p12.png",
-                "p13.png","p13.png",
-                "p14.png","p14.png",
-                "p15.png","p15.png",
-                "p16.png","p16.png",
-                "p17.png","p17.png", 
+                "p7.png","p7.png" 
                 ];
+  
+  // 모델2
+  let model2 = ["p0.png","p0.png",
+		       "p1.png","p1.png",
+		       "p2.png","p2.png",
+		       "p3.png","p3.png",
+		       "p4.png","p4.png",
+		       "p5.png","p5.png",
+		       "p6.png","p6.png",
+		       "p7.png","p7.png",
+		       "p8.png","p8.png",
+		       "p9.png","p9.png",
+		       "p10.png","p10.png",
+		       "p11.png","p11.png",
+		       "p12.png","p12.png",
+		       "p13.png","p13.png",
+		       "p14.png","p14.png",
+		       "p15.png","p15.png",
+		       "p16.png","p16.png",
+		       "p17.png","p17.png" 
+		       ];	
+  //모델3
+  let model3 = ["p0.png","p0.png"];
+	             
+	
+//------------------------ 위 이미지--------------------------
+	
    $(document).ready(function(){
+	   
+	  
+		
 	   // sessionInfo값을 요청 동기요청!
 	   let loginState = null;
-	   
+	   /*
 	   $.ajax({
 		  url :"/puzzle/GetSessionInfo",
 		  async : false, // 동기요청
 		  method : "POST",
 		  success : function(json){
 			loginState = json;
-			console.log("sessionInfo : ", loginState);
+			console.log("sessionInfo : ", loginState); //세션값 (로그인아이디);
 		  }
 	   });
 	    //로그인이 되었나 묻는 
 	    if(loginState == null){
 		   location.href = "/puzzle/login.html";
 		   return false;
-	   }  
+	   }  */
 	   //상단에 로그인 id표시
 	   $("#loginState").text(loginState);
 	   
@@ -76,115 +129,245 @@
 	   timer = setInterval(function(){
 		   timerNum++;
 		   $("#timer").text(timerNum);
-	   }, 1000);
-	 //로그아웃 버튼
-	      $("#logoutBtn").click(function(){
-	         console.log("out");
-	         $.ajax({
-	              url :"/puzzle/Logout",
-	              method : "POST",
-	              success : function(json){
-	               console.log("sessionInfo : ", loginState);
-	               location.href = "/puzzle/login.html";
-	               return;
-	              }, 
-	              error: function() {
-	               alert("로그아웃 실패 다시 입력해 주세요.");
-	            },
-	            fail: function() {
-	               alert("로그아웃 실패 다시 입력해 주세요.");
-	            }
-	            });
-	      });
+	  }, 1000);
 	   
-      // 모델을 섞는다
-      for(let a=0; a<1; a++) {
+	   //시작 메시지
+	  /*  setTimeout(function() {
+	 	alert('바로 시작!!!');
+		}, 999); */
+	   
+	   
+	   //힌트 -힌트를 누르기전 맞춘 퍼즐은 가려짐.
+	   let hintCount = 0; 
+	
+	   $("#hintBtn").click(function(){
+	   $(".pic").attr("disabled",true); //힌트 진행중 퍼즐 클릭방지.
+	   
+		   $(".pic").each(function(){
+					$(this).attr("disabled",false);
+			
+	        });
+		   hintCount ++
+		   console.log("hintCount", hintCount);
+		   
+		   //라운드에 따른 힌트수 1R:1개 ,2R:2개, 3R:3개
+		   if(hintCount==1){
+			   $("#hintBtn").hide();
+		   }else if(hintCount==3){
+			   $("#hintBtn").hide();
+		   }else if(hintCount==6){
+			   $("#hintBtn").hide();
+		   }
+		   
+	   }); //hintBtn
+	   
+	   
+	  //------------------------------------------ 게임 ----퍼즐출력 및 변수설정-----
+	 	  
+	  let total = 0; // 몇번째 클릭인지. 
+	  let stage = 1;
+	  
+	  //스테이지 1 이면 model1
+	  model = model1;
+	  console.log("model.length"+model.length); //출력한 model 크기
+	  
+      // 모델을 섞는다 (a: 섞을 수)
+/*       for(let a=0; a<10000; a++) {
          // ran : 0~15
-         let ran = Math.floor(Math.random()*36);
+         let ran = Math.floor(Math.random()*model.length);
          let tmp = model[0];
          model[0] = model[ran];
          model[ran] = tmp;
-      }
-      // 우클릭 방지 oncontextmenu = 'return false'
-      // 드래그 방지 ondragstart = 'retrun false'
-      //이미지 출력.
-      // 16개 이미지 출력.
-	   $("#board").append("<tr>");
-	   $(model).each( function(index, item) {
-	      let html = "<td oncontextmenu ='return false' ondragstart ='return false' width='150px'>"
-	            + "<input class='pic p1'  type='image' src='/puzzle/images/"
-	            + item + "'></td>";
-	      if (index / 6 > 0 && index % 6 == 0) {
-	         console.log(index);
-	         $("#board").append("</tr><tr>");
-	      }
-	      $("#board").append(html);
-	   });
+      } */
       
-      //서서히 이미지가 사라짐.
-      $(".pic").each(function(){
-              $(this).animate({opacity:0.01}, 3000);  //이슈 :드래그버그 -> 우클릭방지로 해결
-        });
+      //이미지 출력.
+      $("#board").empty();
+		$(model).each(function(index, item){
+			if (index%4 == 0) {
+				$("#board").append("<tr>");
+			} 
+			let game = "<td class='card'>";
+			game += "<input type='image' class='face front' src='/puzzle/images/";
+			game += item;
+			game += "'>";
+			game += "<input type='image' class='face back' src='/puzzle/images/1.png'>";
+			game += "</td>";
+			$("#board").append(game);
+			if (index%4 == 0) {
+				$("#board").append("</tr>");
+			}
+		});
+      
+	   $(".card").each(function(){
+			$(this).toggleClass("active");
+		})
       //게임 변수설정
-      let total = 0;
-      let state = 0;
-      let success = 0;
+      let state = 0;  //0 or 1 or 2
+      let success = 0;//몇개 그림을 맞췄는지
       let onePic = null;
       let twoPic = null;
-      
+          //----------------------------기능-----------------------------------
+    
       //1클릭과 2클릭이 같다면 같은 이미지는 멈춤, 아니라면 사라짐.
-      $(".pic").click(function(){
+      $(document).on("click",".card",function(){ //동적으로 생선된 태그에 이벤트 핸들러 적용
+    	//------------플립기능-----------------------------------------------------
+   	   
+   			$(this).toggleClass("active");
+   		
+    	  
+    	  //console.log("click------");
+		  //console.log("stage : ", stage);
+		  //console.log("total", total);    	  
+    	  
             total++;
             state++;
-            $(this).attr("disabled",true); //더블클릭 방지
             
+            $(this).attr("disabled",true);
+            $(this).children().attr("disabled",true); //더블클릭 방지
+            
+            //console.log($(this).children());
             if(1==state){
-               console.log("1");
-               $(this).animate({opacity:1},1);
-               onePic = $(this);
+               console.log("state 1");
+           	   
+               onePic = $(this).children();
+               console.log($(onePic).attr("src"));
             }else if(2==state) {
-               console.log("2");
-               $(this).animate({opacity:1},1);
-               twoPic =$(this);
+               console.log("state 2");
+            
+               twoPic =$(this).children();
+               console.log($(onePic).attr("src"), " ", $(twoPic).attr("src"));
                if($(onePic).attr("src") == $(twoPic).attr("src")){
                   success ++;
+                  console.log("success", success);
                   if(success == model.length/2){
-                	 clearInterval(timer);
-                	 alert("게임 끝");
-                      $.ajax({
-                    	 url: "/puzzle/AddReport",
-                    	 method: "POST",
-                    	 data: {"timer": timerNum,
-                    		 	"count": total,
-                    		 	"memberId": loginState
-                    	 		},
-                     }); 
-                     
-                     console.log("게임종료 시간 : " + timerNum+", 횟수 : "+ total);
-                     return;
-                  }
-               }else {
-                  $(onePic).animate({"opacity":0.01},1000);
-                  $(twoPic).animate({"opacity":0.01},1000);
+                	 console.log("스테이지 종료 : " + timerNum+", 횟수 : "+ total);
+                     //alert("스테이지 종료 : " + timerNum+", 횟수 : "+ total);
+                    //게임종료
+                    
+                    //새로운 스테이지
+                    stage +=1;
+                    success =0;
+                    
+                    if(stage <4){
+                    	//stage1 이면 모델1 2일때 모델2
+                    	console.log("stage",stage);
+                    	if(stage ==2){
+                    		$("#hintBtn").show();
+                    		model = model2;
+                    	}else if(stage ==3){
+                    		model = model3;
+                    		$("#hintBtn").show();                 		
+                    	}
+                    	console.log("model.length", model.length);
+                    	
+                    	// 모델을 섞는다
+                        for(let a=0; a<1; a++) {
+                           // ran : 0~15
+                           let ran = Math.floor(Math.random()*model.length);
+                           let tmp = model[0];
+                           model[0] = model[ran];
+                           model[ran] = tmp;
+                        }
+                    	//모델출력
+						//이미지 출력.
+					
+					      $("#board").empty();
+								$(model).each(function(index, item){
+									if (index%6 == 0) {
+										$("#board").append("<tr>");
+									} 
+									let game = "<td class='card'>";
+									game += "<input type='image' class='face front' src='/puzzle/images/";
+									game += item;
+									game += "'>";
+									game += "<input type='image' class='face back' src='/puzzle/images/1.png'>";
+									game += "</td>";
+									$("#board").append(game);
+									if (index%6 == 0) {
+										$("#board").append("</tr>");
+									}
+								});
+								$(".card").each(function(){
+									$(this).toggleClass("active");
+								})
+					      //서서히 이미지가 사라짐.
+								setTimeout(function() {
+									$(".card").each(function(){
+										$(this).toggleClass("active");
+									})
+								}, 3000);
+					      
+                    } else { // } : stage4
+                    	clearInterval(timer);
+                    	console.log("게임종료", timer);
+                    	//서버로 최종 결과 전송.. 랭킹 리스트로 이동
+                    	 $.ajax({
+                        	 url: "/puzzle/AddReport",
+                        	 method: "POST",
+                        	 data: {"timer": timerNum,
+                        		 	"count": total,
+                        		 	"memberId": loginState
+                        	 		}
+                         }); //ajax
+                    	} //else
+                    }   // if(success == model.length/2){
+               }else {  // } : if($(onePic).attr("src") == $(twoPic).attr("src")) //틀리면 가려짐.
+                
+                  console.log("no");
+                  $(onePic).toggleClass("active");
+                  $(twoPic).toggleClass("active");
                   $(onePic).attr("disabled",false); //더블클릭 방지 해제
                   $(twoPic).attr("disabled",false); 
                }
+               
                state=0;
-            }
-         });
-      
+            }//2=state
+        });//document.ready2
+    
+    
+	//---------------3초 후 강제 플립(뒤집기)-----------------------------
+	setTimeout(function() {
+		$(".card").each(function(){
+			$(this).toggleClass("active");
+		})
+	}, 3000);
+    //----------------버튼--------------------------------------------------
+    
       //리셋버튼
       $("#resetBtn").click(function(){
     	  location.href="/puzzle/puzzle.html";
     	  return false
       });
-      //인덱스버튼 <--현재 안됨
+      //인덱스버튼 
       $("#indexBtn").click(function(){
-    	  lacation.href="/puzzle/index.html";
+    	  location.href="/puzzle/index.html";
     	  return false
       });
-     //document.ready 
-   });
+      
+ 	 //로그아웃 버튼
+      $("#logoutBtn").click(function(){
+         console.log("out");
+         $.ajax({
+              url :"/puzzle/Logout",
+              method : "POST",
+              success : function(json){
+               console.log("sessionInfo : ", loginState);
+               location.href = "/puzzle/login.html";
+               return;
+              }, 
+              error: function() {
+               alert("로그아웃 실패 다시 입력해 주세요.");
+            },
+            fail: function() {
+               alert("로그아웃 실패 다시 입력해 주세요.");
+            }
+            });
+      });
+ 	 
+    
+      //-----------------------버튼 끝-------------------------------
+      
+   });//document.ready
 
 </script>
 </html>
