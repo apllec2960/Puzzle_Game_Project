@@ -16,51 +16,46 @@
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <style>
+	body{
+		background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+	}
+	button{
+		background-image: linear-gradient(to top, #feada6 0%, #f5efef 100%);
+	}
+
 </style>
 <script src="/puzzle/scripts/jquery-3.4.1.min.js"></script>
 </head>
-<body>
-	<!-- 
-	[TOP10]
-	limit 10
+<body class="container">
+	<div align="center" class="mt-5 pt-3">
 	
-	SELECT * FROM report ORDER BY timer ASC, count ASC;
-	[Today Top 10] 
-	WHERE 날짜함수(report_date) == 날짜함수(now()) limit 10
-	
-	
-	[my report list] WHERE member_id="?
-	 -->
-
-	<div align="center" >
-	
-		<h1>index</h1>
+		<h1>Reverse Puzzle</h1>
 		<h3><span id="loginState"></span></h3>
 		
 		<table>
 			<tr>
 				<td>
 					<!-- 로그인 후 -->
-					<button id ="gameBtn">게임</button>
+					<button id ="gameBtn" class="btn">💻게임</button>
 				</td>
 				<td>
 					<!-- 로그인 전 -->
-					<button id ="loginBtn">로그인</button>
-					<button id ="joinBtn">회원가입</button>
+					<button id ="loginBtn" class="btn">로그인</button>
+					<button id ="joinBtn" class="btn">회원가입</button>
 					<!-- 로그인 후 -->
-					<button id ="logoutBtn">로그아웃</button>
-					<button id ="updateBtn">개인정보 수정</button>
+					<button id ="logoutBtn" class="btn">로그아웃</button>
+					<button id ="updateBtn" class="btn">개인정보 수정</button>
 				<td>
 			</tr>
 		</table>
 		<hr>
 		
 	
-		<button id="totalBtn">top10</button>
-		<button id="todayBtn">오늘의 top10</button>
-		<button id="monthBtn">이달의 top10</button>
+		<button id="totalBtn" class="btn ">👑 top10</button>
+		<button id="monthBtn" class="btn">🏆이달의 top10</button>
+		<button id="todayBtn" class="btn">🥇오늘의 top10</button>
 		<!-- 로그인 후 -->
-		<button id ="myRecordList">my report list</button>
+		<button id ="myRecordList" class="btn">⏳내 기록</button>
 		<hr>
 		
 		<!--순위 list 출력 -->
@@ -85,7 +80,7 @@ $(document).ready(function(){
 	  }
    });	 
    
-/*     //로그인이 되었나 묻는 
+/*     //로그인이 되었나 묻는  
     if(loginState == null){
 	   location.href = "/puzzle/login.html";
 	   return false;

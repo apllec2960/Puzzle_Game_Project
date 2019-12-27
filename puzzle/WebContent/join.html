@@ -4,9 +4,29 @@
 <meta charset="UTF-8">
 <title>Sigh Up</title>
 <script src="/puzzle/scripts/jquery-3.4.1.min.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<style>
+	body{
+		background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+	}
+	button{
+		background-image: linear-gradient(to top, #feada6 0%, #f5efef 100%);
+	}
+</style>
 </head>
-<body>
-   <h2>Sigh Up</h2>
+<body class="container mb-0 mt-0">
+   <h2>회원가입</h2>
    <table>
       <tr>
          <td>member_id</td>
@@ -17,10 +37,21 @@
          <td><input id="memberPw" type="password"></td>
       </tr>
    </table> 
-   <button id="joinBtn">회원가입</button>
+   <button id="joinBtn">가입</button>
+   <button id="cancel">취소</button>
 </body>
 <script>
+	
+	//가입버튼
    $("#joinBtn").click(function(){
+	   console.log("회원가입");
+	   
+	   if( $("#memberId").val() == "" || $("#memberPw").val() == "" ){
+		   console.log($("#memberId").val());
+		   alert("빈칸이 존재합니다");
+		   return;
+	   }
+	   
       $.ajax({
            url :"/puzzle/AddMember",
            method : "POST",
@@ -32,6 +63,13 @@
              }
        });
    });
+   
+   //취소 버튼
+   $("#cancel").click(function(){
+	   location.href = "/puzzle/login.html";
+   })
+   
+  
    
 </script>
 </html>

@@ -3,26 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <title>Login</title>
+
 <script src="/puzzle/scripts/jquery-3.4.1.min.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<style>
+	body{
+		background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+	}
+	button{
+		background-image: linear-gradient(to top, #feada6 0%, #f5efef 100%);
+	}
+
+</style>
 </head>
-<body>
-	<h2>Login</h2>
+<body class="container center mt-5 pt-3">
+	<h2>로그인</h2>
+
 	<table>
 		<tr>
-			<td>member_id</td>
-			<td><input id="memberId" type="text"></td>
+			<td>아이디</td>
+			<td><input id="memberId" type="text" value="1234"></td>
 		</tr>
 		<tr>
-			<td>member_pw</td>
-			<td><input id="memberPw" type="text"></td>
+			<td>패스워드</td>
+			<td><input id="memberPw" type="password" value="1234"></td>
 		</tr>
 	</table> 
-	<button id="loginBtn">login</button>
+	
+	<button id="loginBtn">로그인</button>
 	<button id="joinBtn">회원가입</button>	<!-- click : location.href ="" -->
 </body>
 <script>
 	//로그인 버튼 클릭
 	$("#loginBtn").click(function(){
+		
+	 if( $("#memberId").val() == "" || $("#memberPw").val() == "" ){
+		   alert("빈칸이 존재합니다");
+		   return;
+	   }
+		
 		$.ajax({
 			  url :"/puzzle/GetLogin",
 			  method : "POST",
