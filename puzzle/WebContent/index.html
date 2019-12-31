@@ -65,7 +65,17 @@
 	</div>
 	
 </body>
-<script>	
+<script>
+function list(item){
+	let html = "<tr>";
+    html += "<td>"+item.memberId+"</td>";
+    html += "<td>"+item.reportDate+"</td>";
+    html += "<td>"+item.count+"</td>";
+    html += "<td>"+item.timer+"</td>";
+    html += "</tr>";
+    $("#list").append(html);
+}
+
 $(document).ready(function(){
    // sessionInfo값을 요청 동기요청!
    let loginState = null;
@@ -113,7 +123,20 @@ $(document).ready(function(){
 	   $("#updateBtn").show();
    }
    
-	   
+	//전체 탑10
+   $.ajax({
+       url: "/puzzle/SelectReportLimit",
+       method: "POST",
+       success : function(json){
+          $("#list").empty();
+         // console.log(json);
+          $(json).each(function(index, item){
+             list(item);
+          })            
+       }                           
+    });
+   
+   
 	//전체 탑10 버튼
 	$("#totalBtn").click(function(){
 	    $.ajax({
@@ -123,13 +146,7 @@ $(document).ready(function(){
 	            $("#list").empty();
 	           // console.log(json);
 	            $(json).each(function(index, item){
-	               let html = "<tr>";
-	               html += "<td>"+item.memberId+"</td>";
-	               html += "<td>"+item.reportDate+"</td>";
-	               html += "<td>"+item.count+"</td>";
-	               html += "<td>"+item.timer+"</td>";
-	               html += "</tr>";
-	               $("#list").append(html);
+	            	list(item);
 	               
 	            })            
 	         }                           
@@ -144,13 +161,7 @@ $(document).ready(function(){
 	            $("#list").empty();
 	           // console.log(json);
 	            $(json).each(function(index, item){
-	               let html = "<tr>";
-	               html += "<td>"+item.memberId+"</td>";
-	               html += "<td>"+item.reportDate+"</td>";
-	               html += "<td>"+item.count+"</td>";
-	               html += "<td>"+item.timer+"</td>";
-	               html += "</tr>";
-	               $("#list").append(html);
+	            	list(item);
 	            });       
 	         }                    
 	      }); 
@@ -164,14 +175,7 @@ $(document).ready(function(){
 			$("#list").empty();
 			console.log(json);
 				$(json).each(function(index, item){
-					let html = "<tr>";
-					html += "<td>"+item.memberId+"</td>";
-					html += "<td>"+item.reportDate+"</td>";
-		            html += "<td>"+item.count+"</td>";
-		            html += "<td>"+item.timer+"</td>";
-		            html += "</tr>";
-		            console.log(html);
-		            $("#list").append(html);
+					list(item);
 				});
 			}	
 	 	});
@@ -186,13 +190,7 @@ $(document).ready(function(){
 				console.log(json);
 				$("#list").empty();
 				$(json).each(function(index, item){
-					let html ="<tr>";
-					html += "<td>"+item.memberId+"</td>";
-					html += "<td>"+item.reportDate+"</td>";
-		            html += "<td>"+item.count+"</td>";
-		            html += "<td>"+item.timer+"</td>";
-		            html += "</tr>";
-		            $("#list").append(html);
+					list(item);
 				});
 			}
 		});

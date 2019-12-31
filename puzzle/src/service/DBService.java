@@ -10,6 +10,7 @@ public class DBService {
 	public static Connection getConnection() throws Exception {
 		Class.forName("org.mariadb.jdbc.Driver");
 		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/puzzle","root","java1234");
+		//Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/e2garden","e2garden","dlwjddnjs12!@");
 		return conn;
 	}
 	public static void close(ResultSet rs, Statement stmt, Connection conn) {

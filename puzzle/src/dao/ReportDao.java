@@ -17,7 +17,7 @@ public class ReportDao {
 	//기록 추가
 	public void AddReport(Connection conn, Report report) throws Exception{
 			PreparedStatement stmt = null;
-			String sql = "INSERT INTO report(member_id, report_date, count, timer) VALUES (?, now(), ?, ?)";
+			String sql = "INSERT INTO puzzle_report(member_id, report_date, count, timer) VALUES (?, now(), ?, ?)";
 			try {
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, report.getMemberId());
@@ -37,7 +37,7 @@ public class ReportDao {
 	      List<Report> list = new ArrayList<Report>();
 	      PreparedStatement stmt = null;
 	      ResultSet rs = null;
-	      String sql = "SELECT member_id, report_date, count, timer FROM report ORDER BY count DESC, timer DESC LIMIT 0, ?";
+	      String sql = "SELECT member_id, report_date, count, timer FROM puzzle_report ORDER BY count DESC, timer DESC LIMIT 0, ?";
 	      try {
 	      stmt = conn.prepareStatement(sql);
 	      stmt.setInt(1, limit);
@@ -67,7 +67,7 @@ public class ReportDao {
 		 List<Report> list =new ArrayList<Report>();
 		 PreparedStatement stmt = null;
 		 ResultSet rs = null;
-		 String sql = "SELECT * FROM report WHERE DATE(report_date) = DATE(NOW()) AND YEAR(report_date) = YEAR(NOW()) AND MONTH(report_date) = MONTH(NOW()) ORDER BY timer DESC LIMIT 0,?;";
+		 String sql = "SELECT * FROM puzzle_report WHERE DATE(report_date) = DATE(NOW()) AND YEAR(report_date) = YEAR(NOW()) AND MONTH(report_date) = MONTH(NOW()) ORDER BY timer DESC LIMIT 0,?;";
 		 try {
 			 stmt = conn.prepareStatement(sql);
 			 stmt.setInt(1,limit);
@@ -94,7 +94,7 @@ public class ReportDao {
 	 public List<Report> reportMonthTopList(Connection conn, int limit) throws Exception{
 		 List<Report> list = new ArrayList<Report>();
 		 PreparedStatement stmt = null;
-		 String sql = "SELECT * FROM report WHERE MONTH(report_date) =MONTH(NOW()) AND YEAR(report_date) =YEAR(NOW()) ORDER BY timer LIMIT 0,?";
+		 String sql = "SELECT * FROM puzzle_report WHERE MONTH(report_date) =MONTH(NOW()) AND YEAR(report_date) =YEAR(NOW()) ORDER BY timer LIMIT 0,?";
 		 ResultSet rs =null;
 		 try {
 			 stmt = conn.prepareStatement(sql);
@@ -123,7 +123,7 @@ public class ReportDao {
 	 public List<Report> reportMyList(Connection conn, int limit, Report report)throws Exception{
 		 List<Report> list = new ArrayList<Report>();
 		 PreparedStatement stmt = null;
-		 String sql ="SELECT member_id,count,timer,report_date FROM report WHERE member_id = ? ORDER BY timer DESC LIMIT 0,? ";
+		 String sql ="SELECT member_id,count,timer,report_date FROM puzzle_report WHERE member_id = ? ORDER BY timer DESC LIMIT 0,? ";
 		 ResultSet rs = null;
 		 try {
 			 stmt = conn.prepareStatement(sql);
