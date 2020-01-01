@@ -62,15 +62,16 @@
 		background-image: linear-gradient(to top, #feada6 0%, #f5efef 100%);
 		button-hover;
 	}
-
 </style>
 
 <script src="/puzzle/scripts/jquery-3.4.1.min.js"></script>
 </head>
 <body ondragstart ='return false' oncontextmenu ='return false'>
-	<h2 class="align-center">Reverse Puzzle 
-	<br>
-	- ID:<span id="loginState"></span> - <span id="timer">0</span>'s</h2>
+	<h1 class="align-center">Reverse Puzzle </h1>
+	
+	<div class="align-center">
+		<strong><span id="loginState"></span></strong>님 도전하세요! <br> 진행시간 <span id="timer">0</span>
+	</div>
 	<hr>
 	<div class="align-center">
 		<!--  힌트 버튼  -->
@@ -79,9 +80,11 @@
 		<button id="resetBtn" class="btn">리셋</button>
 		
 		<!--  퍼즐 출력  -->
-		<table id="board" class="layer"></table>
-		
+			<table id="board" class="layer"></table>
 	</div>
+	<p style="float :left; font-size: x-large;">
+	  	힌트<br> 1Round : 1번 <br> 2Round : 2번 <br> 3Round : 3번 <br>
+	</p>
 </body>
 <script>
 	
@@ -117,7 +120,25 @@
 		       "p17.png","p17.png" 
 		       ];	
   //모델3
-  let model3 = ["p0.png","p0.png"];
+  let model3 = ["p0.png","p0.png",
+			     "p1.png","p1.png",
+			     "p2.png","p2.png",
+			     "p3.png","p3.png",
+			     "p4.png","p4.png",
+			     "p5.png","p5.png",
+			     "p6.png","p6.png",
+			     "p7.png","p7.png",
+			     "p8.png","p8.png",
+			     "p9.png","p9.png",
+			     "p10.png","p10.png",
+			     "p11.png","p11.png",
+			     "p12.png","p12.png",
+			     "p13.png","p13.png",
+		      	 "p14.png","p14.png",
+		      	 "p15.png","p15.png",
+		      	 "p16.png","p16.png",
+		      	 "p17.png","p17.png" 
+			      ];	
 	             
 	
 //------------------------ 위 이미지--------------------------
@@ -152,7 +173,7 @@
 		   timerNum++;
 		   $("#timer").text(timerNum);
 	  }, 1000);
-	   
+	   	   
 	   //시작 메시지
 	    setTimeout(function() {
 	 	alert('바로 시작!!!');
@@ -178,13 +199,19 @@
 		   console.log("hintCount", hintCount);
 		   
 		   //라운드에 따른 힌트수 1R:1개 ,2R:2개, 3R:3개
-		   if(hintCount==1){
-			   $("#hintBtn").hide();
-		   }else if(hintCount==3){
-			   $("#hintBtn").hide();
-		   }else if(hintCount==6){
-			   $("#hintBtn").hide();
-		   }
+		   if(stage ==1){
+  			   if(hintCount ==1){
+  				   $("#hintBtn").hide();
+  			   }
+  		   }else if(stage ==2){
+  			   if(hintCount ==2){
+  				   $("#hintBtn").hide();
+  			   }
+  		   }else if(stage ==3){
+  			   if(hintCount==3){
+  				   $("#hintBtn").hide();
+  			   }
+  		   }
 		   
 	   }); //hintBtn
 	   
@@ -199,7 +226,7 @@
 	  console.log("model.length"+model.length); //출력한 model 크기
 	  
       // 모델을 섞는다 (a: 섞을 수)
-       for(let a=0; a<10000; a++) {
+       for(let a=0; a<1; a++) {
          // ran : 0~15
          let ran = Math.floor(Math.random()*model.length);
          let tmp = model[0];
@@ -217,7 +244,7 @@
 			game += "<input type='image' class='face front' src='/puzzle/images/";
 			game += item;
 			game += "'>";
-			game += "<input type='image' class='face back' src='/puzzle/images/1.jpg'>";
+			game += "<input type='image' class='face back' src='/puzzle/images/3.png'>";
 			game += "</td>";
 			$("#board").append(game);
 			if (index%4 == 0) {
@@ -251,8 +278,9 @@
             total++;
             state++;
             
+            //더블 클릭 방지
             $(this).attr("disabled",true);
-            $(this).children().attr("disabled",true); //더블클릭 방지
+            $(this).children().attr("disabled",true); 
             
             //console.log($(this).children());
             if(1==state){
@@ -268,22 +296,26 @@
                if($(onePic).attr("src") == $(twoPic).attr("src")){
                   success ++;
                   console.log("success", success);
+                  
+                  //게임 종료
                   if(success == model.length/2){
                 	 console.log("스테이지 종료 : " + timerNum+", 횟수 : "+ total);
-                     //alert("스테이지 종료 : " + timerNum+", 횟수 : "+ total);
-                    //게임종료
+                     alert("스테이지 종료 : " + timerNum+", 횟수 : "+ total);
                     
                     //새로운 스테이지
                     stage +=1;
                     success =0;
                     
+                    
+                  //stage 변경 및 힌트 버튼 보이기
                     if(stage <4){
-                    	//stage1 이면 모델1 2일때 모델2
                     	console.log("stage",stage);
                     	if(stage ==2){
+                    		hintCount=0;
                     		$("#hintBtn").show();
                     		model = model2;
                     	}else if(stage ==3){
+                    		hintCount=0;
                     		model = model3;
                     		$("#hintBtn").show();                 		
                     	}
@@ -308,7 +340,7 @@
 									game += "<input type='image' class='face front' src='/puzzle/images/";
 									game += item;
 									game += "'>";
-									game += "<input type='image' class='face back' src='/puzzle/images/1.jpg'>";
+									game += "<input type='image' class='face back' src='/puzzle/images/3.png'>";
 									game += "</td>";
 									$("#board").append(game);
 									if (index%6 == 0) {
@@ -344,14 +376,14 @@
                     }   // if(success == model.length/2){
                }else {  // } : if($(onePic).attr("src") == $(twoPic).attr("src")) //틀리면 가려짐.
                 
-               	//틀렸을시 0.5초후 뒤집어짐.
+               	//틀렸을시 0.8초후 뒤집어짐.
                   setTimeout(function(){
               
                   $(onePic).toggleClass("active");
                   $(twoPic).toggleClass("active");
                   $(onePic).attr("disabled",false); //더블클릭 방지 해제
                   $(twoPic).attr("disabled",false); 
-                  },1000);
+                  },800);
                }
                state=0;
             }//2=state
